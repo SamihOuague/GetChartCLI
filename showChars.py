@@ -8,5 +8,7 @@ doubleStick = chr(9474)
 doubleBlock = chr(9608)
 topBlock = chr(9604)
 bottomBlock = chr(9600)
+noneBlock = chr(9472)
 
-print(doubleBlock + " " + doubleBlock)
+for i in range(9450, 9650):
+    print(chr(i), i)
