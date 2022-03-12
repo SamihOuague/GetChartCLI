@@ -72,6 +72,11 @@ def drawChart(candles):
     bottomBlock = chr(9600)
     noneBlock = chr(9472)
 
+
+    noneBlockStick = chr(9532)
+    noneBlockStickBottom = chr(9524)
+    noneBlockStickTop = chr(9516)
+
     for i in range(limits[1], limits[0]):
         pos = limits[1] - (i - limits[1]) + (limits[0] - limits[1] - 1)
         printable = False
@@ -94,23 +99,31 @@ def drawChart(candles):
                             char += "\033[32m"
                         else:
                             char += "\033[31m"
-                        if (high - low) == 0:
-                            char += noneBlock
-                        elif linePrice == high:
-                            if linePrice <= intvl[0] and linePrice >= intvl[1]:
-                                char += topBlock
+                        if candles[round(c/2)][1] == candles[round(c/2)][4] and linePrice <= intvl[0] and linePrice >= intvl[1]:
+                            if (high - low) == 0:
+                                char += noneBlock
+                            elif low == candles[round(c/2)][1]:
+                                char += noneBlockStickBottom
+                            elif high == candles[round(c/2)][1]:
+                                char += noneBlockStickTop
                             else:
-                                char += monoStickTop
-                        elif linePrice == low:
-                            if linePrice <= intvl[0] and linePrice >= intvl[1]:
-                                char += bottomBlock
-                            else:
-                                char += monoStickBottom
+                                char += noneBlockStick
                         else:
-                            if linePrice <= intvl[0] and linePrice >= intvl[1]:
-                                char += doubleBlock
+                            if linePrice == high:
+                                if linePrice <= intvl[0] and linePrice >= intvl[1] and linePrice % 2 != 0:
+                                    char += topBlock
+                                else:
+                                    char += monoStickTop
+                            elif linePrice == low:
+                                if linePrice <= intvl[0] and linePrice >= intvl[1] and linePrice % 2 != 0:
+                                    char += bottomBlock
+                                else:
+                                    char += monoStickBottom
                             else:
-                                char += doubleStick
+                                if linePrice < intvl[0] and linePrice > intvl[1]:
+                                    char += doubleBlock
+                                else:
+                                    char += doubleStick
                     else:
                         char += emptyTable[i][c]
                     char += "\033[39m"
@@ -124,7 +137,7 @@ def drawChart(candles):
 
 api = BinanceAPI()
 while True:
-    start = (round(time()) - (25 * 60)) * 1000
+    start = (round(time()) - (50 * 60)) * 1000
     candles = api.getCandles("CHZUSDT", "1m", str(start))
     system("clear")
     print("\n\n")
